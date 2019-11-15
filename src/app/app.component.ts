@@ -1,9 +1,11 @@
 import { Component } from '@angular/core';
-import { ANTLRInputStream, CommonTokenStream } from 'antlr4ts';
+import { ANTLRInputStream, CommonTokenStream, RuleContext } from 'antlr4ts';
 import { ParseTreeWalker } from 'antlr4ts/tree';
-import { BusinessRuleLexer } from './BusinessRuleLexer';
-import { BusinessRuleParser, ParseContext } from './BusinessRuleParser';
-import { ExpressionCounter } from './expr.counter';
+import { BaneQLParser, QueryContext } from './src/antlr/BaneQLParser';
+import { BaneQLLexer } from './src/antlr/BaneQLLexer';
+import { BaneQLBaseListener } from './src/antlr/BaneQLBaseListener';
+
+import { AutoSuggester } from './src/suggest/autosuggest';
 
 @Component({
   selector: 'app-root',
@@ -11,34 +13,38 @@ import { ExpressionCounter } from './expr.counter';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  title = 'ANTLR Typescript Demo';
+  title = 'BaneQL Query Builder';
 
-  expc: number;
+  querySize: number;
   rulefield: string;
   tokenStream: CommonTokenStream;
-  lexer: BusinessRuleLexer;
-  parser: BusinessRuleParser;
-  tree: ParseContext;
+  lexer: BaneQLLexer;
+  parser: BaneQLParser;
+  tree: QueryContext;
   inputStream: ANTLRInputStream;
-  ec: ExpressionCounter;
+  query: BaneQLBaseListener;
 
   constructor() {
-    this.rulefield = 'a = 10 & b = 5';
+    this.rulefield = 'A';
   }
 
   public parse() {
     this.inputStream = new ANTLRInputStream(this.rulefield);
-    this.lexer = new BusinessRuleLexer(this.inputStream);
+    this.lexer = new BaneQLLexer(this.inputStream);
     this.tokenStream = new CommonTokenStream(this.lexer);
-    this.parser = new BusinessRuleParser(this.tokenStream);
-    this.tree = this.parser.parse();
+    this.parser = new BaneQLParser(this.tokenStream);
+    this.tree = this.parser.query();
 
-    this.ec = new ExpressionCounter();
+    this.query = new BaneQLBaseListener();
 
-    ParseTreeWalker.DEFAULT.walk(this.ec, this.tree);
+    ParseTreeWalker.DEFAULT.walk<any>(this.query, this.tree);
+    debugger;
+    const autosuggester =  new (AutoSuggester as any)(BaneQLLexer,BaneQLParser);
+    let suggestions = autosuggester.autosuggest("sample(a,c=t) ");
+    debugger;
     // this.rulefield += this.ec.getCount();
-    this.expc = this.ec.getCount();
+    //this.querySize = this.query.getSize();
     // console.log(this.tree);
-    console.log(this.ec.getCount());
+    //console.log(this.query.getSize());
   }
 }

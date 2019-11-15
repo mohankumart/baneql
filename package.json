@@ -8,7 +8,7 @@
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",
-    "antlr4ts": "antlr4ts -visitor ./src/antlr/BusinessRule.g4 -o ./src/app"
+    "antlr4ts": "antlr4ts -visitor ./src/antlr/BaneQL.g4 -o ./src/app"
   },
   "private": true,
   "dependencies": {
@@ -49,6 +49,6 @@
     "protractor": "^5.4.1",
     "ts-node": "~5.0.1",
     "tslint": "~5.9.1",
-    "typescript": "~2.3"
+    "typescript": "~2.7"
   }
 }

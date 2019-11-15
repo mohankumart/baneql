@@ -7,11 +7,11 @@
 <div>
   <form class="example-form">
     <mat-form-field class="example-full-width">
-      <textarea matInput [(ngModel)]="rulefield" name="rule" placeholder="Enter a Rule"></textarea>
+      <textarea matInput [(ngModel)]="rulefield" name="rule" placeholder="Enter a Query"></textarea>
     </mat-form-field>
   </form>
   <button (click)="parse()" mat-raised-button color="primary">parse</button>
 </div>
 <p>
-  Expression Count : {{expc}}
+  Query Count : {{ querySize }}
 </p>
